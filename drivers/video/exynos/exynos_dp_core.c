@@ -1126,8 +1126,6 @@ static int exynos_dp_remove(struct platform_device *pdev)
 	struct exynos_dp_platdata *pdata = pdev->dev.platform_data;
 	struct exynos_dp_device *dp = platform_get_drvdata(pdev);
 
-	disable_irq(dp->irq);
-
 	if (work_pending(&dp->hotplug_work))
 		flush_work(&dp->hotplug_work);
 
@@ -1141,7 +1139,6 @@ static int exynos_dp_remove(struct platform_device *pdev)
 
 	clk_disable_unprepare(dp->clock);
 
-
 	return 0;
 }
 
@@ -1150,6 +1147,8 @@ static int exynos_dp_suspend(struct device *dev)
 {
 	struct exynos_dp_platdata *pdata = dev->platform_data;
 	struct exynos_dp_device *dp = dev_get_drvdata(dev);
+
+	disable_irq(dp->irq);
 
 	if (work_pending(&dp->hotplug_work))
 		flush_work(&dp->hotplug_work);
